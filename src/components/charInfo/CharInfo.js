@@ -12,6 +12,10 @@ class CharInfo extends Component {
     char: null,
     loading: false,
     error: false,
+    started: 0,
+    ended: 0,
+    prev: false,
+    next: false,
   };
 
   marvelService = new MarvelService();
@@ -27,7 +31,10 @@ class CharInfo extends Component {
   }
 
   onCharLoaded = (char) => {
-    this.setState({ char, loading: false });
+    this.setState({ char, loading: false, ended: char.comics.length });
+    if (this.state.ended - this.state.started > 10) {
+      this.setState({ next: true });
+    }
   };
 
   onError = () => {
@@ -35,7 +42,20 @@ class CharInfo extends Component {
   };
 
   onCharLoading = () => {
-    this.setState({ loading: true });
+    this.setState({ loading: true, started: 0, next: false, prev: false });
+  };
+
+  onListUpdate = (newStart) => {
+    this.setState({ started: newStart });
+    const { ended, next, prev } = this.state;
+
+    if (ended - newStart > 10 && next) {
+      this.setState({ next: true });
+    } else if (ended - newStart <= 10 && next) {
+      this.setState({ next: false, prev: true });
+    } else if (ended - newStart > 10 && prev) {
+      this.setState({ next: true, prev: false });
+    }
   };
 
   updateChar = () => {
@@ -43,9 +63,7 @@ class CharInfo extends Component {
     if (!charId) {
       return;
     }
-
     this.onCharLoading();
-
     this.marvelService
       .getCharacter(charId)
       .then(this.onCharLoaded)
@@ -53,12 +71,18 @@ class CharInfo extends Component {
   };
 
   render() {
-    const { char, loading, error } = this.state;
+    const { char, loading, error, ...otherItems } = this.state;
 
     const skeleton = char || loading || error ? null : <Skeleton />;
     const spinner = loading ? <Spinner /> : null;
     const errorMessage = error ? <ErrorMessage /> : null;
-    const content = !(loading || error || !char) ? <View char={char} /> : null;
+    const content = !(loading || error || !char) ? (
+      <View
+        char={char}
+        otherItems={otherItems}
+        onListUpdate={this.onListUpdate}
+      />
+    ) : null;
 
     return (
       <div className='char__info'>
@@ -71,8 +95,9 @@ class CharInfo extends Component {
   }
 }
 
-const View = ({ char }) => {
+const View = ({ char, otherItems, onListUpdate }) => {
   const { name, description, thumbnail, homepage, wiki, comics } = char;
+  let { prev, next, started } = otherItems;
   const styleImg = thumbnail.indexOf('not_available') !== -1;
 
   return (
@@ -102,10 +127,10 @@ const View = ({ char }) => {
       </div>
       <div className='char__comics'>Comics:</div>
       <ul className='char__comics-list'>
-        {comics.slice(0, 10).length > 0
+        {comics.slice(started, started + 10).length > 0
           ? null
           : 'There is no comics with this character'}
-        {comics.slice(0, 10).map((item, i) => {
+        {comics.slice(started, started + 10).map((item, i) => {
           return (
             <li key={i} className='char__comics-item'>
               {item.name}
@@ -113,6 +138,26 @@ const View = ({ char }) => {
           );
         })}
       </ul>
+      {
+        <div className='char__info-btns'>
+          {!prev ? null : (
+            <button
+              className='button button__main'
+              onClick={() => onListUpdate(started - 10)}
+            >
+              <div className='inner'>load prev</div>
+            </button>
+          )}
+          {!next ? null : (
+            <button
+              className='button button__secondary'
+              onClick={() => onListUpdate(started + 10)}
+            >
+              <div className='inner'>load next</div>
+            </button>
+          )}
+        </div>
+      }
     </>
   );
 };

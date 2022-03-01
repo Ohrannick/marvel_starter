@@ -16,6 +16,11 @@
     .skeleton {
       margin-top: 30px;
     }
+    &-btns {
+      display: flex;
+      justify-content: space-evenly;
+      margin-top: 30px;
+    }
   }
   &__basics {
     display: grid;
