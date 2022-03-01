@@ -21,7 +21,7 @@
     display: grid;
     grid-template-columns: 150px auto;
     column-gap: 25px;
-    img {
+    &-img {
       width: 150px;
       height: 150px;
       object-fit: cover;

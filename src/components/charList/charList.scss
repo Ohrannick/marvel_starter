@@ -22,16 +22,20 @@
     padding: 15px;
     cursor: pointer;
     transition: 0.3s transform;
-    img {
+    &-img {
       width: 200px;
       height: 200px;
       object-fit: cover;
       transform: translate(-15px, -15px);
     }
-    &_selected {
+    &:hover {
       box-shadow: 0 5px 20px $main-color;
       transform: translateY(-8px);
     }
+    // &_selected {
+    //   box-shadow: 0 5px 20px $main-color;
+    //   transform: translateY(-8px);
+    // }
   }
   &__name {
     font-weight: bold;
@@ -39,5 +43,14 @@
     line-height: 29px;
     text-transform: uppercase;
     color: #fff;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  &__list-btns {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 30px;
   }
 }
