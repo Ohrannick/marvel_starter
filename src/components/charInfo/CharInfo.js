@@ -1,4 +1,6 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton';
@@ -14,8 +16,8 @@ class CharInfo extends Component {
     error: false,
     started: 0,
     ended: 0,
-    prev: false,
-    next: false,
+    prevBtn: false,
+    nextBtn: false,
   };
 
   marvelService = new MarvelService();
@@ -24,8 +26,8 @@ class CharInfo extends Component {
     this.updateChar();
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.charId !== prevProps.charId) {
+  componentDidUpdate(prevBtnProps) {
+    if (this.props.charId !== prevBtnProps.charId) {
       this.updateChar();
     }
   }
@@ -33,7 +35,7 @@ class CharInfo extends Component {
   onCharLoaded = (char) => {
     this.setState({ char, loading: false, ended: char.comics.length });
     if (this.state.ended - this.state.started > 10) {
-      this.setState({ next: true });
+      this.setState({ nextBtn: true });
     }
   };
 
@@ -42,19 +44,24 @@ class CharInfo extends Component {
   };
 
   onCharLoading = () => {
-    this.setState({ loading: true, started: 0, next: false, prev: false });
+    this.setState({
+      loading: true,
+      started: 0,
+      nextBtn: false,
+      prevBtn: false,
+    });
   };
 
   onListUpdate = (newStart) => {
     this.setState({ started: newStart });
-    const { ended, next, prev } = this.state;
+    const { ended, nextBtn, prevBtn } = this.state;
 
-    if (ended - newStart > 10 && next) {
-      this.setState({ next: true });
-    } else if (ended - newStart <= 10 && next) {
-      this.setState({ next: false, prev: true });
-    } else if (ended - newStart > 10 && prev) {
-      this.setState({ next: true, prev: false });
+    if (ended - newStart > 10 && nextBtn) {
+      this.setState({ nextBtn: true });
+    } else if (ended - newStart <= 10 && nextBtn) {
+      this.setState({ nextBtn: false, prevBtn: true });
+    } else if (ended - newStart > 10 && prevBtn) {
+      this.setState({ nextBtn: true, prevBtn: false });
     }
   };
 
@@ -97,7 +104,7 @@ class CharInfo extends Component {
 
 const View = ({ char, otherItems, onListUpdate }) => {
   const { name, description, thumbnail, homepage, wiki, comics } = char;
-  let { prev, next, started } = otherItems;
+  let { prevBtn, nextBtn, started } = otherItems;
   const styleImg = thumbnail.indexOf('not_available') !== -1;
 
   return (
@@ -140,7 +147,7 @@ const View = ({ char, otherItems, onListUpdate }) => {
       </ul>
       {
         <div className='char__info-btns'>
-          {!prev ? null : (
+          {!prevBtn ? null : (
             <button
               className='button button__main'
               onClick={() => onListUpdate(started - 10)}
@@ -148,7 +155,7 @@ const View = ({ char, otherItems, onListUpdate }) => {
               <div className='inner'>load prev</div>
             </button>
           )}
-          {!next ? null : (
+          {!nextBtn ? null : (
             <button
               className='button button__secondary'
               onClick={() => onListUpdate(started + 10)}
@@ -160,6 +167,10 @@ const View = ({ char, otherItems, onListUpdate }) => {
       }
     </>
   );
+};
+
+CharInfo.propTypes = {
+  charId: PropTypes.number,
 };
 
 export default CharInfo;
