@@ -50,6 +50,7 @@ class CharList extends Component {
     this.marvelService
       .getAllCharacters(newOffset)
       .then(this.onCharsListLoaded)
+      .then((this.itemRefs = [])) // Обнуление массива с Ref после обновления страницы
       .catch(this.onError);
   };
 
@@ -81,14 +82,49 @@ class CharList extends Component {
     this.setState({ loading: false, error: true });
   };
 
+  itemRefs = [];
+
+  setRef = (ref) => {
+    if (ref !== null) {
+      this.itemRefs.push(ref);
+    }
+  };
+
+  focusOnItem = (id) => {
+    // Я реализовал вариант чуть сложнее, и с классом и с фокусом
+    // Но в теории можно оставить только фокус, и его в стилях использовать вместо класса
+    // На самом деле, решение с css-классом можно сделать, вынеся персонажа
+    // в отдельный компонент. Но кода будет больше, появится новое состояние
+    // и не факт, что мы выиграем по оптимизации за счет большего кол-ва элементов
+    // По возможности, не злоупотребляйте рефами, только в крайних случаях
+    if (this.itemRefs.length > 0) {
+      this.itemRefs.forEach((item) => {
+        item.classList.remove('char__item_selected');
+      });
+      this.itemRefs[id].classList.add('char__item_selected');
+      this.itemRefs[id].focus();
+    }
+  };
+
   renderItems = (items) => {
-    const elements = items.map((item) => {
+    const elements = items.map((item, i) => {
       const styleImg = item.thumbnail.indexOf('not_available') !== -1;
       return (
         <li
           className='char__item'
           key={item.id}
-          onClick={() => this.props.onCharSelected(item.id)}
+          tabIndex={0}
+          ref={this.setRef}
+          onClick={() => {
+            this.props.onCharSelected(item.id);
+            this.focusOnItem(i);
+          }}
+          onKeyPress={(e) => {
+            if (e.key === ' ' || e.key === 'Enter') {
+              this.props.onCharSelected(item.id);
+              this.focusOnItem(i);
+            }
+          }}
         >
           <img
             src={item.thumbnail}
