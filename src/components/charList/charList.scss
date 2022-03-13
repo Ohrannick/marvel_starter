@@ -49,8 +49,10 @@
     overflow: hidden;
   }
   &__list-btns {
-    display: flex;
-    justify-content: space-evenly;
+    display: grid;
+    grid-template-columns: repeat(4, 20%);
+    grid-column-gap: 30px;
     margin-top: 30px;
+    justify-content: center;
   }
 }

@@ -7,6 +7,7 @@ import Spinner from '../spinner/Spinner';
 import MarvelService from '../../servises/MarvelService';
 
 import './charList.scss';
+
 const CharList = (props) => {
   const [chars, setChars] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,18 +20,21 @@ const CharList = (props) => {
 
   const marvelService = new MarvelService();
 
-  useEffect(() => {
-    marvelService.getMaxCharacters().then(onMaxCharacters).catch(onError);
-
-    marvelService
-      .getAllCharacters(offset)
-      .then(onCharsListLoaded)
-      .catch(onError);
-  }, []);
-
   const onMaxCharacters = (max) => {
-    setTotal((total) => max);
+    setTotal(max);
   };
+
+  const onError = () => {
+    setLoading(false);
+    setError(true);
+  };
+
+  marvelService.getMaxCharacters().then(onMaxCharacters).catch(onError);
+
+  useEffect(() => {
+    console.log('effect', offset);
+    onRequest(offset);
+  }, [offset]);
 
   const onRequest = (newOffset) => {
     onCharsListLoading();
@@ -40,8 +44,9 @@ const CharList = (props) => {
     } else if (newOffset < 0) {
       newOffset = 0;
     }
+    setOffset(newOffset);
 
-    setOffset((offset) => newOffset);
+    console.log('onRequest', newOffset, offset);
     marvelService
       .getAllCharacters(newOffset)
       .then(onCharsListLoaded)
@@ -54,24 +59,23 @@ const CharList = (props) => {
   };
 
   const onCharsListLoaded = (newChars) => {
+    // debugger;
     let ended = false;
     let started = false;
+    console.log('1', started, ended, offset);
     if (total - offset === 9) {
       ended = true;
     } else if (offset <= 0) {
       started = true;
     }
+    console.log('2', started, ended, offset);
 
     setChars((chars) => [...newChars]);
     setLoading((loading) => false);
     setBtnDisabled((btnDisabled) => false);
-    setCharStarted((CharStarted) => started);
-    setCharEnded((CharEnded) => ended);
-  };
-
-  const onError = () => {
-    setLoading(false);
-    setError(true);
+    setCharStarted(started);
+    setCharEnded(ended);
+    console.log('3', charStarted, charEnded, offset);
   };
 
   let itemRefs = useRef([]);
@@ -145,32 +149,32 @@ const CharList = (props) => {
         <button
           disabled={btnDisabled}
           className='button button__main'
-          style={{ display: charStarted ? 'none' : 'block' }}
-          onClick={() => onRequest(0)}
+          style={{ visibility: charStarted ? 'hidden' : 'visible' }}
+          onClick={() => setOffset(0)}
         >
           <div className='inner'>Home</div>
         </button>
         <button
           disabled={btnDisabled}
           className='button button__main'
-          style={{ display: charStarted ? 'none' : 'block' }}
-          onClick={() => onRequest(offset - 9)}
+          style={{ visibility: charStarted ? 'hidden' : 'visible' }}
+          onClick={() => setOffset(offset - 9)}
         >
           <div className='inner'>load prev</div>
         </button>
         <button
           disabled={btnDisabled}
           className='button button__secondary'
-          style={{ display: charEnded ? 'none' : 'block' }}
-          onClick={() => onRequest(offset + 9)}
+          style={{ visibility: charEnded ? 'hidden' : 'visible' }}
+          onClick={() => setOffset(offset + 9)}
         >
           <div className='inner'>load next</div>
         </button>
         <button
           disabled={btnDisabled}
           className='button button__secondary'
-          style={{ display: charEnded ? 'none' : 'block' }}
-          onClick={() => onRequest(total - 9)}
+          style={{ visibility: charEnded ? 'hidden' : 'visible' }}
+          onClick={() => setOffset(total - 9)}
         >
           <div className='inner'>End</div>
         </button>
