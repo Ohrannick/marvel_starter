@@ -1,6 +1,7 @@
 class MarvelService {
+  // _apiKey = '&apikey=e25937beab56ee26015e638b17075a47';  // ohrannick
   _apiBase = 'https://gateway.marvel.com:443/v1/public/';
-  _apiKey = '&apikey=e25937beab56ee26015e638b17075a47';
+  _apiKey = '&apikey=26e38d3e895ad27450942c501bc43854'; // ohrannick.pupkin
   _baseOffset = 210;
 
   getResourse = async (url) => {

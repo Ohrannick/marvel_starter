@@ -14,7 +14,7 @@ const CharList = (props) => {
   const [error, setError] = useState(false);
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [offset, setOffset] = useState(210);
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState();
   const [charEnded, setCharEnded] = useState(false);
   const [charStarted, setCharStarted] = useState(false);
 
@@ -50,7 +50,6 @@ const CharList = (props) => {
     marvelService
       .getAllCharacters(newOffset)
       .then(onCharsListLoaded)
-      // .then((itemRefs = [])) // Обнуление массива с Ref после обновления страницы
       .catch(onError);
   };
 
@@ -59,40 +58,25 @@ const CharList = (props) => {
   };
 
   const onCharsListLoaded = (newChars) => {
-    // debugger;
     let ended = false;
     let started = false;
-    console.log('1', started, ended, offset);
     if (total - offset === 9) {
       ended = true;
     } else if (offset <= 0) {
       started = true;
     }
-    console.log('2', started, ended, offset);
 
     setChars((chars) => [...newChars]);
     setLoading((loading) => false);
     setBtnDisabled((btnDisabled) => false);
     setCharStarted(started);
     setCharEnded(ended);
-    console.log('3', charStarted, charEnded, offset);
+    console.log('loaded', charStarted, charEnded, offset);
   };
 
   let itemRefs = useRef([]);
 
-  // setRef = (ref) => {
-  //   if (ref !== null) {
-  //     this.itemRefs.push(ref);
-  //   }
-  // };
-
   const focusOnItem = (id) => {
-    // Я реализовал вариант чуть сложнее, и с классом и с фокусом
-    // Но в теории можно оставить только фокус, и его в стилях использовать вместо класса
-    // На самом деле, решение с css-классом можно сделать, вынеся персонажа
-    // в отдельный компонент. Но кода будет больше, появится новое состояние
-    // и не факт, что мы выиграем по оптимизации за счет большего кол-ва элементов
-    // По возможности, не злоупотребляйте рефами, только в крайних случаях
     if (itemRefs.current.length > 0) {
       itemRefs.current.forEach((item) => {
         item.classList.remove('char__item_selected');
