@@ -1,75 +1,61 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
-import MarvelService from '../../servises/MarvelService';
+import useMarvelService from '../../servises/MarvelService';
 import cn from 'classnames';
 import mjolnir from '../../resources/img/mjolnir.png';
 
 import './randomChar.scss';
 
-class RandomChar extends Component {
-  state = {
-    char: {},
-    loading: true,
-    error: false,
+const RandomChar = () => {
+  const [char, setChar] = useState(null);
+
+  const { loading, error, getCharacter, clearError } = useMarvelService();
+
+  useEffect(() => {
+    updateChar();
+    // const timerId = setInterval(updateChar, 10000);
+
+    // return () => {
+    //   clearInterval(timerId);
+    // };
+  }, []);
+
+  const onCharLoaded = (char) => {
+    setChar(char);
   };
 
-  marvelService = new MarvelService();
-
-  componentDidMount() {
-    this.updateChar();
-  }
-
-  componentWillUnmount() {}
-
-  onCharLoaded = (char) => {
-    this.setState({ char, loading: false });
-  };
-
-  onError = () => {
-    this.setState({ loading: false, error: true });
-  };
-
-  onCharLoading = () => {
-    this.setState({ loading: true });
-  };
-
-  updateChar = () => {
+  const updateChar = () => {
+    clearError();
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-    this.onCharLoading();
-    this.marvelService
-      .getCharacter(id)
-      .then(this.onCharLoaded)
-      .catch(this.onError);
+    getCharacter(id).then(onCharLoaded);
   };
 
-  render() {
-    const { char, loading, error } = this.state;
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error) ? <View char={char} /> : null;
+  console.log('random', error, loading, char);
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const spinner = loading ? <Spinner /> : null;
+  const content = !(loading || error || !char) ? <View char={char} /> : null;
 
-    return (
-      <div className='randomchar'>
-        {errorMessage}
-        {spinner}
-        {content}
-        <div className='randomchar__static'>
-          <p className='randomchar__title'>
-            Random character for today!
-            <br />
-            Do you want to get to know him better?
-          </p>
-          <p className='randomchar__title'>Or choose another one</p>
-          <button onClick={this.updateChar} className='button button__main'>
-            <div className='inner'>try it</div>
-          </button>
-          <img src={mjolnir} alt='mjolnir' className='randomchar__decoration' />
-        </div>
+  return (
+    <div className='randomchar'>
+      {errorMessage}
+      {spinner}
+      {content}
+      <div className='randomchar__static'>
+        <p className='randomchar__title'>
+          Random character for today!
+          <br />
+          Do you want to get to know him better?
+        </p>
+        <p className='randomchar__title'>Or choose another one</p>
+        <button onClick={updateChar} className='button button__main'>
+          <div className='inner'>try it</div>
+        </button>
+        <img src={mjolnir} alt='mjolnir' className='randomchar__decoration' />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 const View = ({ char }) => {
   const { name, description, thumbnail, homepage, wiki } = char;
@@ -91,10 +77,10 @@ const View = ({ char }) => {
             : 'This is unknow character. It has not description'}
         </p>
         <div className='randomchar__btns'>
-          <a href={homepage} className='button button__main'>
+          <a href={homepage} target='_blank' className='button button__main'>
             <div className='inner'>homepage</div>
           </a>
-          <a href={wiki} className='button button__secondary'>
+          <a href={wiki} target='_blank' className='button button__secondary'>
             <div className='inner'>Wiki</div>
           </a>
         </div>

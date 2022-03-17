@@ -1,110 +1,86 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
+import useMarvelService from '../../servises/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton';
-import cn from 'classnames';
-import MarvelService from '../../servises/MarvelService';
 
+import cn from 'classnames';
 import './charInfo.scss';
 
-class CharInfo extends Component {
-  state = {
-    char: null,
-    loading: false,
-    error: false,
-    started: 0,
-    ended: 0,
-    prevBtn: false,
-    nextBtn: false,
-  };
+const CharInfo = (props) => {
+  const [char, setChar] = useState(null);
+  const [started, setStarted] = useState(0);
+  const [ended, setEnded] = useState();
+  const [prevBtn, setPrevBtn] = useState(false);
+  const [nextBtn, setNextBtn] = useState(false);
 
-  marvelService = new MarvelService();
+  const { loading, error, getCharacter, clearError } = useMarvelService();
 
-  componentDidMount() {
-    this.updateChar();
-  }
+  useEffect(() => {
+    updateChar();
+  }, [props.charId]);
 
-  componentDidUpdate(prevBtnProps) {
-    if (this.props.charId !== prevBtnProps.charId) {
-      this.updateChar();
-    }
-  }
-
-  onCharLoaded = (char) => {
-    this.setState({ char, loading: false, ended: char.comics.length });
-    if (this.state.ended - this.state.started > 10) {
-      this.setState({ nextBtn: true });
+  const onCharLoaded = (charNew) => {
+    setChar(() => charNew);
+    setEnded(() => charNew.comics.length);
+    if (charNew.comics.length - started > 10) {
+      setNextBtn(true);
     }
   };
 
-  onError = () => {
-    this.setState({ loading: false, error: true });
-  };
-
-  onCharLoading = () => {
-    this.setState({
-      loading: true,
-      started: 0,
-      nextBtn: false,
-      prevBtn: false,
-    });
-  };
-
-  onListUpdate = (newStart) => {
-    this.setState({ started: newStart });
-    const { ended, nextBtn, prevBtn } = this.state;
+  const onListUpdate = (newStart) => {
+    setStarted(() => newStart);
 
     if (ended - newStart > 10 && nextBtn) {
-      this.setState({ nextBtn: true });
+      setNextBtn(true);
     } else if (ended - newStart <= 10 && nextBtn) {
-      this.setState({ nextBtn: false, prevBtn: true });
+      setNextBtn(false);
+      setPrevBtn(true);
     } else if (ended - newStart > 10 && prevBtn) {
-      this.setState({ nextBtn: true, prevBtn: false });
+      setNextBtn(true);
+      setPrevBtn(false);
     }
   };
 
-  updateChar = () => {
-    const { charId } = this.props;
+  const updateChar = () => {
+    const { charId } = props;
     if (!charId) {
       return;
     }
-    this.onCharLoading();
-    this.marvelService
-      .getCharacter(charId)
-      .then(this.onCharLoaded)
-      .catch(this.onError);
+    setStarted(0);
+    setNextBtn(false);
+    setPrevBtn(false);
+
+    clearError();
+    getCharacter(charId).then(onCharLoaded);
   };
 
-  render() {
-    const { char, loading, error, ...otherItems } = this.state;
+  const skeleton = char || loading || error ? null : <Skeleton />;
+  const spinner = loading ? <Spinner /> : null;
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const content = !(loading || error || !char) ? (
+    <View
+      char={char}
+      prevBtn={prevBtn}
+      nextBtn={nextBtn}
+      started={started}
+      onListUpdate={onListUpdate}
+    />
+  ) : null;
 
-    const skeleton = char || loading || error ? null : <Skeleton />;
-    const spinner = loading ? <Spinner /> : null;
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const content = !(loading || error || !char) ? (
-      <View
-        char={char}
-        otherItems={otherItems}
-        onListUpdate={this.onListUpdate}
-      />
-    ) : null;
+  return (
+    <div className='char__info'>
+      {skeleton}
+      {spinner}
+      {errorMessage}
+      {content}
+    </div>
+  );
+};
 
-    return (
-      <div className='char__info'>
-        {skeleton}
-        {spinner}
-        {errorMessage}
-        {content}
-      </div>
-    );
-  }
-}
-
-const View = ({ char, otherItems, onListUpdate }) => {
+const View = ({ char, prevBtn, nextBtn, started, onListUpdate }) => {
   const { name, description, thumbnail, homepage, wiki, comics } = char;
-  let { prevBtn, nextBtn, started } = otherItems;
   const styleImg = thumbnail.indexOf('not_available') !== -1;
 
   return (
@@ -118,10 +94,10 @@ const View = ({ char, otherItems, onListUpdate }) => {
         <div>
           <div className='char__info-name'>{name}</div>
           <div className='char__btns'>
-            <a href={homepage} className='button button__main'>
+            <a href={homepage} target='_blank' className='button button__main'>
               <div className='inner'>homepage</div>
             </a>
-            <a href={wiki} className='button button__secondary'>
+            <a href={wiki} target='_blank' className='button button__secondary'>
               <div className='inner'>Wiki</div>
             </a>
           </div>
@@ -146,7 +122,12 @@ const View = ({ char, otherItems, onListUpdate }) => {
         })}
       </ul>
       {
-        <div className='char__info-btns'>
+        <div
+          className='char__info-btns'
+          style={
+            !prevBtn ? { justifyContent: 'end' } : { justifyContent: 'start' }
+          }
+        >
           {!prevBtn ? null : (
             <button
               className='button button__main'

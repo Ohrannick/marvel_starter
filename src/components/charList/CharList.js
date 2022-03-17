@@ -4,53 +4,43 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
-import MarvelService from '../../servises/MarvelService';
+import useMarvelService from '../../servises/MarvelService';
 
 import './charList.scss';
+
 const CharList = (props) => {
   const [chars, setChars] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [btnDisabled, setBtnDisabled] = useState(false);
-  const [offset, setOffset] = useState(210);
-  const [total, setTotal] = useState(0);
+  const [offset, setOffset] = useState(510);
+  const [total, setTotal] = useState();
   const [charEnded, setCharEnded] = useState(false);
   const [charStarted, setCharStarted] = useState(false);
 
-  const marvelService = new MarvelService();
-
-  useEffect(() => {
-    marvelService.getMaxCharacters().then(onMaxCharacters).catch(onError);
-
-    marvelService
-      .getAllCharacters(offset)
-      .then(onCharsListLoaded)
-      .catch(onError);
-  }, []);
+  const { loading, error, getMaxCharacters, getAllCharacters } =
+    useMarvelService();
 
   const onMaxCharacters = (max) => {
-    setTotal((total) => max);
+    setTotal(max);
   };
 
+  useEffect(() => {
+    getMaxCharacters().then(onMaxCharacters);
+  }, []);
+
+  useEffect(() => {
+    onRequest(offset);
+  }, [offset]);
+
   const onRequest = (newOffset) => {
-    onCharsListLoading();
+    setBtnDisabled(true);
 
     if (total - newOffset < 9 && total - newOffset > 0) {
       newOffset = total - 9;
     } else if (newOffset < 0) {
       newOffset = 0;
     }
-
-    setOffset((offset) => newOffset);
-    marvelService
-      .getAllCharacters(newOffset)
-      .then(onCharsListLoaded)
-      // .then((itemRefs = [])) // Обнуление массива с Ref после обновления страницы
-      .catch(onError);
-  };
-
-  const onCharsListLoading = () => {
-    setBtnDisabled((btnDisabled) => true);
+    setOffset(newOffset);
+    getAllCharacters(newOffset).then(onCharsListLoaded);
   };
 
   const onCharsListLoaded = (newChars) => {
@@ -62,33 +52,15 @@ const CharList = (props) => {
       started = true;
     }
 
-    setChars((chars) => [...newChars]);
-    setLoading((loading) => false);
-    setBtnDisabled((btnDisabled) => false);
-    setCharStarted((CharStarted) => started);
-    setCharEnded((CharEnded) => ended);
-  };
-
-  const onError = () => {
-    setLoading(false);
-    setError(true);
+    setChars([...newChars]);
+    setBtnDisabled(false);
+    setCharStarted(started);
+    setCharEnded(ended);
   };
 
   let itemRefs = useRef([]);
 
-  // setRef = (ref) => {
-  //   if (ref !== null) {
-  //     this.itemRefs.push(ref);
-  //   }
-  // };
-
   const focusOnItem = (id) => {
-    // Я реализовал вариант чуть сложнее, и с классом и с фокусом
-    // Но в теории можно оставить только фокус, и его в стилях использовать вместо класса
-    // На самом деле, решение с css-классом можно сделать, вынеся персонажа
-    // в отдельный компонент. Но кода будет больше, появится новое состояние
-    // и не факт, что мы выиграем по оптимизации за счет большего кол-ва элементов
-    // По возможности, не злоупотребляйте рефами, только в крайних случаях
     if (itemRefs.current.length > 0) {
       itemRefs.current.forEach((item) => {
         item.classList.remove('char__item_selected');
@@ -145,32 +117,32 @@ const CharList = (props) => {
         <button
           disabled={btnDisabled}
           className='button button__main'
-          style={{ display: charStarted ? 'none' : 'block' }}
-          onClick={() => onRequest(0)}
+          style={{ visibility: charStarted ? 'hidden' : 'visible' }}
+          onClick={() => setOffset(0)}
         >
           <div className='inner'>Home</div>
         </button>
         <button
           disabled={btnDisabled}
           className='button button__main'
-          style={{ display: charStarted ? 'none' : 'block' }}
-          onClick={() => onRequest(offset - 9)}
+          style={{ visibility: charStarted ? 'hidden' : 'visible' }}
+          onClick={() => setOffset(offset - 9)}
         >
           <div className='inner'>load prev</div>
         </button>
         <button
           disabled={btnDisabled}
           className='button button__secondary'
-          style={{ display: charEnded ? 'none' : 'block' }}
-          onClick={() => onRequest(offset + 9)}
+          style={{ visibility: charEnded ? 'hidden' : 'visible' }}
+          onClick={() => setOffset(offset + 9)}
         >
           <div className='inner'>load next</div>
         </button>
         <button
           disabled={btnDisabled}
           className='button button__secondary'
-          style={{ display: charEnded ? 'none' : 'block' }}
-          onClick={() => onRequest(total - 9)}
+          style={{ visibility: charEnded ? 'hidden' : 'visible' }}
+          onClick={() => setOffset(total - 9)}
         >
           <div className='inner'>End</div>
         </button>
