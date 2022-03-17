@@ -4,40 +4,35 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
-import MarvelService from '../../servises/MarvelService';
+import useMarvelService from '../../servises/MarvelService';
 
 import './charList.scss';
 
 const CharList = (props) => {
   const [chars, setChars] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [btnDisabled, setBtnDisabled] = useState(false);
-  const [offset, setOffset] = useState(210);
+  const [offset, setOffset] = useState(510);
   const [total, setTotal] = useState();
   const [charEnded, setCharEnded] = useState(false);
   const [charStarted, setCharStarted] = useState(false);
 
-  const marvelService = new MarvelService();
+  const { loading, error, getMaxCharacters, getAllCharacters } =
+    useMarvelService();
 
   const onMaxCharacters = (max) => {
     setTotal(max);
   };
 
-  const onError = () => {
-    setLoading(false);
-    setError(true);
-  };
-
-  marvelService.getMaxCharacters().then(onMaxCharacters).catch(onError);
+  useEffect(() => {
+    getMaxCharacters().then(onMaxCharacters);
+  }, []);
 
   useEffect(() => {
-    console.log('effect', offset);
     onRequest(offset);
   }, [offset]);
 
   const onRequest = (newOffset) => {
-    onCharsListLoading();
+    setBtnDisabled(true);
 
     if (total - newOffset < 9 && total - newOffset > 0) {
       newOffset = total - 9;
@@ -45,16 +40,7 @@ const CharList = (props) => {
       newOffset = 0;
     }
     setOffset(newOffset);
-
-    console.log('onRequest', newOffset, offset);
-    marvelService
-      .getAllCharacters(newOffset)
-      .then(onCharsListLoaded)
-      .catch(onError);
-  };
-
-  const onCharsListLoading = () => {
-    setBtnDisabled((btnDisabled) => true);
+    getAllCharacters(newOffset).then(onCharsListLoaded);
   };
 
   const onCharsListLoaded = (newChars) => {
@@ -66,12 +52,10 @@ const CharList = (props) => {
       started = true;
     }
 
-    setChars((chars) => [...newChars]);
-    setLoading((loading) => false);
-    setBtnDisabled((btnDisabled) => false);
+    setChars([...newChars]);
+    setBtnDisabled(false);
     setCharStarted(started);
     setCharEnded(ended);
-    console.log('loaded', charStarted, charEnded, offset);
   };
 
   let itemRefs = useRef([]);
