@@ -8,10 +8,15 @@ import ErrorBoundary from '../errorBoundary/ErrorBoundary';
 import decoration from '../../resources/img/vision.png';
 
 const MainPage = () => {
-  const [selectedChar, setChar] = useState(null);
+  const idChar = localStorage.getItem('idChar')
+    ? localStorage.getItem('idChar')
+    : localStorage.setItem('idChar', null);
+
+  const [selectedChar, setChar] = useState(idChar);
 
   const onCharSelected = (id) => {
     setChar(() => id);
+    localStorage.setItem('idChar', id);
   };
 
   return (

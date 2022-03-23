@@ -7,8 +7,12 @@ import cn from 'classnames';
 import './comicsList.scss';
 
 const ComicsList = () => {
+  const offsetCimic = localStorage.getItem('offsetComic')
+    ? localStorage.getItem('offsetComic')
+    : localStorage.setItem('offsetComic', 210);
+
   const [comics, setComics] = useState([]);
-  const [offset, setOffset] = useState(210);
+  const [offset, setOffset] = useState(offsetCimic);
   const [newItemsLoading, setNewItemsLoading] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 
@@ -33,6 +37,7 @@ const ComicsList = () => {
 
   const onRequest = () => {
     clearError();
+    localStorage.setItem('offsetComic', +offset);
     getAllComics(offset).then(onComicsLoaded);
   };
 
@@ -40,7 +45,7 @@ const ComicsList = () => {
     setNewItemsLoading(false);
 
     setComics([...comics, ...newComics]);
-    setOffset(offset + 8);
+    setOffset(+offset + 8);
     setIsEnd(newComics.length < 8 ? true : false);
   };
 
@@ -79,7 +84,7 @@ const ComicsList = () => {
         className='button button__main button__long'
         disabled={newItemsLoading}
         style={{ display: isEnd ? 'none' : 'block' }}
-        onClick={() => onRequest(offset)}
+        onClick={() => onRequest(+offset)}
       >
         <div className='inner'>load more</div>
       </button>

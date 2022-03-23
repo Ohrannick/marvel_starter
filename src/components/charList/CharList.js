@@ -9,9 +9,13 @@ import useMarvelService from '../../servises/MarvelService';
 import './charList.scss';
 
 const CharList = (props) => {
+  const offsetChar = localStorage.getItem('offsetChar')
+    ? localStorage.getItem('offsetChar')
+    : localStorage.setItem('offsetChar', 510);
+
   const [chars, setChars] = useState([]);
   const [btnDisabled, setBtnDisabled] = useState(false);
-  const [offset, setOffset] = useState(510);
+  const [offset, setOffset] = useState(offsetChar);
   const [total, setTotal] = useState();
   const [charEnded, setCharEnded] = useState(false);
   const [charStarted, setCharStarted] = useState(false);
@@ -40,6 +44,7 @@ const CharList = (props) => {
       newOffset = 0;
     }
     setOffset(newOffset);
+    localStorage.setItem('offsetChar', newOffset);
     getAllCharacters(newOffset).then(onCharsListLoaded);
   };
 
@@ -126,7 +131,7 @@ const CharList = (props) => {
           disabled={btnDisabled}
           className='button button__main'
           style={{ visibility: charStarted ? 'hidden' : 'visible' }}
-          onClick={() => setOffset(offset - 9)}
+          onClick={() => setOffset(+offset - 9)}
         >
           <div className='inner'>load prev</div>
         </button>
@@ -134,7 +139,7 @@ const CharList = (props) => {
           disabled={btnDisabled}
           className='button button__secondary'
           style={{ visibility: charEnded ? 'hidden' : 'visible' }}
-          onClick={() => setOffset(offset + 9)}
+          onClick={() => setOffset(+offset + 9)}
         >
           <div className='inner'>load next</div>
         </button>

@@ -45,7 +45,7 @@ const CharInfo = (props) => {
 
   const updateChar = () => {
     const { charId } = props;
-    if (!charId) {
+    if (charId == 'null') {
       return;
     }
     setStarted(0);
