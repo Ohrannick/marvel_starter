@@ -7,6 +7,7 @@ import Skeleton from '../skeleton/Skeleton';
 
 import cn from 'classnames';
 import './charInfo.scss';
+import { Link } from 'react-router-dom';
 
 const CharInfo = (props) => {
   const [char, setChar] = useState(null);
@@ -114,9 +115,12 @@ const View = ({ char, prevBtn, nextBtn, started, onListUpdate }) => {
           ? null
           : 'There is no comics with this character'}
         {comics.slice(started, started + 10).map((item, i) => {
+          const comicId = item.resourceURI.split('/');
           return (
             <li key={i} className='char__comics-item'>
-              {item.name}
+              <Link to={`/comics/${comicId[comicId.length - 1]}`}>
+                {item.name}
+              </Link>
             </li>
           );
         })}

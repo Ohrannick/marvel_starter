@@ -7,7 +7,6 @@ import SingleComic from '../singleComic/SingleComic';
 
 const SingleComicPage = () => {
   const { comicId } = useParams();
-  console.log(comicId);
   const [comic, setComic] = useState(null);
   const { loading, error, getComic, clearError } = useMarvelService();
 
