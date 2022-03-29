@@ -60,7 +60,7 @@
       margin-top: 10px;
       transition: 0.3s transform;
       &:hover {
-        box-shadow: 0 5px 20px $main-color;
+        box-shadow: 0 5px 15px $dark;
         transform: translateY(-3px);
       }
     }

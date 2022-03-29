@@ -76,10 +76,20 @@ const View = ({ char }) => {
             : 'This is unknow character. It has not description'}
         </p>
         <div className='randomchar__btns'>
-          <a href={homepage} target='_blank' className='button button__main'>
+          <a
+            href={homepage}
+            target='_blank'
+            rel='noreferrer'
+            className='button button__main'
+          >
             <div className='inner'>homepage</div>
           </a>
-          <a href={wiki} target='_blank' className='button button__secondary'>
+          <a
+            href={wiki}
+            target='_blank'
+            rel='noreferrer'
+            className='button button__secondary'
+          >
             <div className='inner'>Wiki</div>
           </a>
         </div>

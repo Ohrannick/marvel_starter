@@ -46,7 +46,7 @@ const CharInfo = (props) => {
 
   const updateChar = () => {
     const { charId } = props;
-    if (charId == 'null') {
+    if (charId === 'null') {
       return;
     }
     setStarted(0);
@@ -95,10 +95,20 @@ const View = ({ char, prevBtn, nextBtn, started, onListUpdate }) => {
         <div>
           <div className='char__info-name'>{name}</div>
           <div className='char__btns'>
-            <a href={homepage} target='_blank' className='button button__main'>
+            <a
+              href={homepage}
+              target='_blank'
+              rel='noreferrer'
+              className='button button__main'
+            >
               <div className='inner'>homepage</div>
             </a>
-            <a href={wiki} target='_blank' className='button button__secondary'>
+            <a
+              href={wiki}
+              target='_blank'
+              rel='noreferrer'
+              className='button button__secondary'
+            >
               <div className='inner'>Wiki</div>
             </a>
           </div>
@@ -117,11 +127,13 @@ const View = ({ char, prevBtn, nextBtn, started, onListUpdate }) => {
         {comics.slice(started, started + 10).map((item, i) => {
           const comicId = item.resourceURI.split('/');
           return (
-            <li key={i} className='char__comics-item'>
-              <Link to={`/comics/${comicId[comicId.length - 1]}`}>
-                {item.name}
-              </Link>
-            </li>
+            <Link
+              to={`/comics/${comicId[comicId.length - 1]}`}
+              key={i}
+              className='char__comics-item'
+            >
+              <li>{item.name}</li>
+            </Link>
           );
         })}
       </ul>
