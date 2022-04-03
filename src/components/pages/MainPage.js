@@ -12,7 +12,7 @@ const MainPage = () => {
     ? localStorage.getItem('idChar')
     : localStorage.setItem('idChar', null);
 
-  const [selectedChar, setChar] = useState(idChar);
+  const [selectedChar, setChar] = useState(+idChar);
 
   const onCharSelected = (id) => {
     setChar(() => id);
