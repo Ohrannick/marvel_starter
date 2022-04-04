@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
 
 import cn from 'classnames';
@@ -66,7 +67,8 @@ const CharList = (props) => {
   let itemRefs = useRef([]);
 
   const focusOnItem = (id) => {
-    if (itemRefs.current.length > 0) {
+    console.log('itemRefs', itemRefs.current);
+    if (itemRefs.current.length > 0 && itemRefs.current[0] !== null) {
       itemRefs.current.forEach((item) => {
         item.classList.remove('char__item_selected');
       });
@@ -79,32 +81,42 @@ const CharList = (props) => {
     const elements = items.map((item, i) => {
       const styleImg = item.thumbnail.indexOf('not_available') !== -1;
       return (
-        <li
-          className='char__item'
-          key={item.id}
-          tabIndex={0}
-          ref={(el) => (itemRefs.current[i] = el)}
-          onClick={() => {
-            props.onCharSelected(item.id);
-            focusOnItem(i);
-          }}
-          onKeyPress={(e) => {
-            if (e.key === ' ' || e.key === 'Enter') {
+        <CSSTransition key={item.id} timeout={500} classNames='char__item'>
+          <li
+            className='char__item'
+            key={item.id}
+            tabIndex={0}
+            ref={(el) => (itemRefs.current[i] = el)}
+            onClick={() => {
               props.onCharSelected(item.id);
               focusOnItem(i);
-            }
-          }}
-        >
-          <img
-            src={item.thumbnail}
-            alt={item.name}
-            className={cn('char__item-img', { contain: styleImg })}
-          />
-          <div className='char__name'>{item.name}</div>
-        </li>
+            }}
+            onKeyPress={(e) => {
+              if (e.key === ' ' || e.key === 'Enter') {
+                props.onCharSelected(item.id);
+                focusOnItem(i);
+              }
+            }}
+          >
+            <img
+              src={
+                !styleImg
+                  ? item.thumbnail
+                  : 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_xlarge.jpg'
+              }
+              alt={item.name}
+              className={cn('char__item-img', { char__item_fit: styleImg })}
+            />
+            <div className='char__name'>{item.name}</div>
+          </li>
+        </CSSTransition>
       );
     });
-    return <ul className='char__grid'>{elements}</ul>;
+    return (
+      <ul className='char__grid'>
+        <TransitionGroup component={null}>{elements}</TransitionGroup>
+      </ul>
+    );
   }
 
   const items = renderItems(chars);
@@ -112,6 +124,7 @@ const CharList = (props) => {
   const spinner = loading ? <Spinner /> : null;
   const errorMessage = error ? <ErrorMessage /> : null;
   const content = !(loading || error) ? items : null;
+  console.log('loading', loading);
 
   return (
     <div className='char__list'>

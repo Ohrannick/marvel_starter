@@ -5,7 +5,7 @@
   grid-template-columns: repeat(2, 50%);
   align-items: center;
   box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.25);
-  // background-color: aliceblue;
+  background-color: aliceblue;
   &__block {
     padding: 40px 35px;
     display: grid;
@@ -16,6 +16,9 @@
     width: 180px;
     height: 180px;
     object-fit: cover;
+  }
+  &__fit {
+    object-fit: unset;
   }
   &__info {
     display: grid;
@@ -60,5 +63,27 @@
     position: absolute;
     bottom: 14px;
     right: -37px;
+  }
+  &-enter {
+    transform: scale(0.1);
+  }
+  &-enter-active {
+    transform: scale(1);
+    transition: all 300ms;
+  }
+  &-enter-done {
+    transform: scale(1);
+    transition: all 300ms;
+  }
+  &-exit {
+    transform: scale(1);
+  }
+  &-exit-active {
+    transform: scale(0.1);
+    transition: all 300ms;
+  }
+  &-exit-done {
+    transform: scale(0.1);
+    transition: all 300ms;
   }
 }

@@ -1,7 +1,13 @@
 @import '../../style/variables.scss';
 
 .char {
+  &__list {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
   &__content {
+    position: relative;
     margin-top: 50px;
     display: grid;
     grid-template-columns: 650px 425px;
@@ -15,14 +21,20 @@
     row-gap: 30px;
   }
   &__item {
+    perspective: 400px;
+    transition: 500ms;
+    border-radius: 20px;
     width: 200px;
     height: 318px;
     background-color: $dark;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
     padding: 15px;
     cursor: pointer;
-    transition: 0.3s transform;
+    // transition: 0.3s transform;
+    transition: all 300ms;
     &-img {
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
       width: 200px;
       height: 200px;
       object-fit: cover;
@@ -32,9 +44,24 @@
       box-shadow: 0 5px 20px $main-color;
       transform: translateY(-8px);
     }
+    &_fit {
+      object-fit: unset;
+    }
     &_selected {
       box-shadow: 0 5px 20px $main-color;
       transform: translateY(-8px);
+      transition: all 300ms;
+    }
+    &-enter {
+      transform: translateX(-750px) rotate(90deg);
+    }
+    &-enter-active {
+      transform: translateX(-750px) rotate(90deg);
+      transition: all 500ms;
+    }
+    &-enter-done {
+      transform: translateX(0) rotate(0deg);
+      transition: all 500ms;
     }
   }
   &__name {

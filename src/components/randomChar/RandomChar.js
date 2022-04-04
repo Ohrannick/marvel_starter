@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { CSSTransition } from 'react-transition-group';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelService from '../../servises/MarvelService';
@@ -9,6 +10,7 @@ import './randomChar.scss';
 
 const RandomChar = () => {
   const [char, setChar] = useState(null);
+  const [loadChar, setLoad] = useState(false);
 
   const { loading, error, getCharacter, clearError } = useMarvelService();
 
@@ -23,6 +25,7 @@ const RandomChar = () => {
 
   const onCharLoaded = (char) => {
     setChar(char);
+    setLoad(true);
   };
 
   const updateChar = () => {
@@ -31,28 +34,35 @@ const RandomChar = () => {
     getCharacter(id).then(onCharLoaded);
   };
 
+  const newRandomChar = () => {
+    updateChar();
+    setLoad(false);
+  };
+
   const errorMessage = error ? <ErrorMessage /> : null;
   const spinner = loading ? <Spinner /> : null;
   const content = !(loading || error || !char) ? <View char={char} /> : null;
 
   return (
-    <div className='randomchar'>
-      {errorMessage}
-      {spinner}
-      {content}
-      <div className='randomchar__static'>
-        <p className='randomchar__title'>
-          Random character for today!
-          <br />
-          Do you want to get to know him better?
-        </p>
-        <p className='randomchar__title'>Or choose another one</p>
-        <button onClick={updateChar} className='button button__main'>
-          <div className='inner'>try it</div>
-        </button>
-        <img src={mjolnir} alt='mjolnir' className='randomchar__decoration' />
+    <CSSTransition in={loadChar} timeout={300} classNames='randomchar'>
+      <div className='randomchar'>
+        {errorMessage}
+        {spinner}
+        {content}
+        <div className='randomchar__static'>
+          <p className='randomchar__title'>
+            Random character for today!
+            <br />
+            Do you want to get to know him better?
+          </p>
+          <p className='randomchar__title'>Or choose another one</p>
+          <button onClick={newRandomChar} className='button button__main'>
+            <div className='inner'>try it</div>
+          </button>
+          <img src={mjolnir} alt='mjolnir' className='randomchar__decoration' />
+        </div>
       </div>
-    </div>
+    </CSSTransition>
   );
 };
 
@@ -62,9 +72,13 @@ const View = ({ char }) => {
   return (
     <div className='randomchar__block'>
       <img
-        src={thumbnail}
+        src={
+          !styleImg
+            ? thumbnail
+            : 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_xlarge.jpg'
+        }
         alt='Random character'
-        className={cn('randomchar__img', { contain: styleImg })}
+        className={cn('randomchar__img', { randomchar__fit: styleImg })}
       />
       <div className='randomchar__info'>
         <p className='randomchar__name'>

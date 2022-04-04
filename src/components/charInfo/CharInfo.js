@@ -88,9 +88,13 @@ const View = ({ char, prevBtn, nextBtn, started, onListUpdate }) => {
     <>
       <div className='char__basics'>
         <img
-          src={thumbnail}
+          src={
+            !styleImg
+              ? thumbnail
+              : 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_xlarge.jpg'
+          }
           alt={name}
-          className={cn('char__basics-img', { contain: styleImg })}
+          className={cn('char__basics-img', { char__basics_fit: styleImg })}
         />
         <div>
           <div className='char__info-name'>{name}</div>

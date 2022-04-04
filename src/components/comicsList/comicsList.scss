@@ -20,17 +20,30 @@
       font-weight: bold;
       font-size: 14px;
       line-height: 18px;
+      color: #ffffff;
     }
     &-price {
       margin-top: 5px;
       font-weight: bold;
       font-size: 14px;
       line-height: 18px;
-      color: rgba(0, 0, 0, 0.6);
+      color: #ffffff;
+      opacity: 0.9;
       text-transform: uppercase;
     }
     &:hover {
       transform: translateY(-5px);
+    }
+    &-enter {
+      transform: scale(0);
+    }
+    &-enter-active {
+      transform: scale(0);
+      transition: all 500ms;
+    }
+    &-enter-done {
+      transform: scale(1);
+      transition: all 500ms;
     }
   }
 }
