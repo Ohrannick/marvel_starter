@@ -87,10 +87,6 @@ body {
   }
 }
 
-// body {
-//   background-color: rgba(90, 56, 56, 0.178);
-// }
-
 main {
   margin-top: 50px;
   position: relative;
@@ -112,29 +108,29 @@ main {
   }
 }
 
-.page-enter {
-  transform: translateX(-110%);
-  transition: all 500ms;
-}
-.page-enter-active {
-  transform: translateX(-110%);
-  transition: all 500ms;
-}
-.page-enter-done {
-  transform: translateX(0%);
-  transition: all 500ms;
-}
+// .page-enter {
+//   transform: translateX(-110%);
+//   transition: all 500ms;
+// }
+// .page-enter-active {
+//   transform: translateX(-110%);
+//   transition: all 500ms;
+// }
+// .page-enter-done {
+//   transform: translateX(0%);
+//   transition: all 500ms;
+// }
 
-.page-exit {
-  transition: 500ms;
-  transform: scale(1);
-}
-.page-exit-active {
-  transition: 500ms;
-  transform: scale(0.1);
-}
-.page-exit-done {
-  transform: scale(0.1);
-  transform: translateX(-110%);
-  transition: all 500ms;
-}
+// .page-exit {
+//   transition: 500ms;
+//   transform: scale(1);
+// }
+// .page-exit-active {
+//   transition: 500ms;
+//   transform: scale(0.1);
+// }
+// .page-exit-done {
+//   transform: scale(0.1);
+//   transform: translateX(-110%);
+//   transition: all 500ms;
+// }
