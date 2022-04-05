@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import './singleComic.scss';
 
-const SingleComic = ({ comic }) => {
-  const { title, thumbnail, price, description, pageCount, language } = comic;
+const SingleComic = ({ data }) => {
+  const { title, thumbnail, price, description, pageCount, language } = data;
   const styleImg = thumbnail.indexOf('not_available') !== -1;
   return (
     <div className='comic'>

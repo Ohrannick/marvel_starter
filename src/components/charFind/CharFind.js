@@ -18,13 +18,11 @@ const CharFind = (props) => {
   const { loading, error, getNameCharacter, clearError } = useMarvelService();
 
   const oCharLoaded = (char) => {
-    console.log('char', char);
     setChar(char);
   };
 
   const searchName = (name) => {
     clearError();
-    console.log('name', name);
     getNameCharacter(name).then(oCharLoaded);
   };
 
@@ -33,13 +31,15 @@ const CharFind = (props) => {
       <ErrorMessage />
     </div>
   ) : null;
-  // console.log('result', char, char.length);
   const results = !char ? null : char.length > 0 ? (
     <div className='charfind__wrapper'>
       <div className='charfind__success'>
         There is! Visit {char[0].name} page?
       </div>
-      <Link to={`/comics/${char[0].id}`} className='button button__secondary'>
+      <Link
+        to={`/characters/${char[0].id}`}
+        className='button button__secondary'
+      >
         <div className='inner'>To page</div>
       </Link>
     </div>
