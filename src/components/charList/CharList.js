@@ -67,7 +67,6 @@ const CharList = (props) => {
   let itemRefs = useRef([]);
 
   const focusOnItem = (id) => {
-    console.log('itemRefs', itemRefs.current);
     if (itemRefs.current.length > 0 && itemRefs.current[0] !== null) {
       itemRefs.current.forEach((item) => {
         item.classList.remove('char__item_selected');
@@ -124,7 +123,6 @@ const CharList = (props) => {
   const spinner = loading ? <Spinner /> : null;
   const errorMessage = error ? <ErrorMessage /> : null;
   const content = !(loading || error) ? items : null;
-  console.log('loading', loading);
 
   return (
     <div className='char__list'>

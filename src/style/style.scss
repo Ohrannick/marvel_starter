@@ -108,6 +108,12 @@ main {
   }
 }
 
+.char__search {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 // .page-enter {
 //   transform: translateX(-110%);
 //   transition: all 500ms;
