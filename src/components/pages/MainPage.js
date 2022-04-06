@@ -13,7 +13,7 @@ const MainPage = () => {
     ? localStorage.getItem('idChar')
     : localStorage.setItem('idChar', null);
 
-  const [selectedChar, setChar] = useState(+idChar);
+  const [selectedChar, setChar] = useState(idChar);
 
   const onCharSelected = (id) => {
     setChar(() => id);
@@ -31,7 +31,7 @@ const MainPage = () => {
         </ErrorBoundary>
         <div className='char__search'>
           <ErrorBoundary>
-            <CharInfo charId={selectedChar} />
+            <CharInfo charId={Number(selectedChar)} />
           </ErrorBoundary>
           <ErrorBoundary>
             <CharFind />

@@ -8,7 +8,7 @@ const Page404 = () => {
   return (
     <div>
       <h1 style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '48px' }}>
-        404
+        Sorry...
       </h1>
       <ErrorMessage />
       <p style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '24px' }}>
@@ -21,8 +21,9 @@ const Page404 = () => {
           fontWeight: 'bold',
           fontSize: '24px',
           marginTop: '30px',
+          color: 'orange',
         }}
-        to='/'
+        to='/characters'
       >
         Back to main page
       </Link>

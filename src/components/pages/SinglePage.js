@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import useMarvelService from '../../servises/MarvelService';
 import Spinner from '../spinner/Spinner';
@@ -7,6 +7,7 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 import AppBanner from '../appBanner/AppBanner';
 
 const SinglePage = ({ Component, dataType }) => {
+  let navigate = useNavigate();
   const { id } = useParams();
   const [data, setData] = useState(null);
   const { loading, error, getComic, getCharacter, clearError } =
@@ -21,10 +22,14 @@ const SinglePage = ({ Component, dataType }) => {
 
     switch (dataType) {
       case 'comic':
-        getComic(id).then(onDataLoaded);
+        getComic(id)
+          .then(onDataLoaded)
+          .catch((err) => (err ? navigate('/404', { replace: true }) : null));
         break;
       case 'character':
-        getCharacter(id).then(onDataLoaded);
+        getCharacter(id)
+          .then(onDataLoaded)
+          .catch((err) => (err ? navigate('/404', { replace: true }) : null));
     }
   };
 

@@ -46,7 +46,7 @@ const CharInfo = (props) => {
 
   const updateChar = () => {
     const { charId } = props;
-    if (charId === 'null') {
+    if (isNaN(charId)) {
       return;
     }
     setStarted(0);

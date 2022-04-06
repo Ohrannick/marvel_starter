@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
@@ -8,6 +8,7 @@ import useMarvelService from '../../servises/MarvelService';
 import './comicsList.scss';
 
 const ComicsList = () => {
+  let navigate = useNavigate();
   const offsetCimic = localStorage.getItem('offsetComic')
     ? localStorage.getItem('offsetComic')
     : localStorage.setItem('offsetComic', 210);
@@ -39,7 +40,9 @@ const ComicsList = () => {
   const onRequest = () => {
     clearError();
     localStorage.setItem('offsetComic', +offset);
-    getAllComics(offset).then(onComicsLoaded);
+    getAllComics(offset)
+      .then(onComicsLoaded)
+      .catch((err) => (err ? navigate('/404', { replace: true }) : null));
   };
 
   const onComicsLoaded = (newComics) => {

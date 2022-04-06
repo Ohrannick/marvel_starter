@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
 
@@ -10,6 +11,7 @@ import useMarvelService from '../../servises/MarvelService';
 import './charList.scss';
 
 const CharList = (props) => {
+  let navigate = useNavigate();
   const offsetChar = localStorage.getItem('offsetChar')
     ? localStorage.getItem('offsetChar')
     : localStorage.setItem('offsetChar', 510);
@@ -46,7 +48,9 @@ const CharList = (props) => {
     }
     setOffset(newOffset);
     localStorage.setItem('offsetChar', newOffset);
-    getAllCharacters(newOffset).then(onCharsListLoaded);
+    getAllCharacters(newOffset)
+      .then(onCharsListLoaded)
+      .catch((err) => (err ? navigate('/404', { replace: true }) : null));
   };
 
   const onCharsListLoaded = (newChars) => {
