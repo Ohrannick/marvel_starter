@@ -23,7 +23,7 @@ const Page404 = () => {
           marginTop: '30px',
           color: 'orange',
         }}
-        to='/characters'
+        to='/'
       >
         Back to main page
       </Link>
