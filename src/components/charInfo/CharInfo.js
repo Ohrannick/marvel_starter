@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+
 import useMarvelService from '../../servises/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -7,7 +9,6 @@ import Skeleton from '../skeleton/Skeleton';
 
 import cn from 'classnames';
 import './charInfo.scss';
-import { Link } from 'react-router-dom';
 
 const CharInfo = (props) => {
   const [char, setChar] = useState(null);
@@ -87,15 +88,17 @@ const View = ({ char, prevBtn, nextBtn, started, onListUpdate }) => {
   return (
     <>
       <div className='char__basics'>
-        <img
-          src={
-            !styleImg
-              ? thumbnail
-              : 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_xlarge.jpg'
-          }
-          alt={name}
-          className={cn('char__basics-img', { char__basics_fit: styleImg })}
-        />
+        <Link to={`/characters/${char.id}`}>
+          <img
+            src={
+              !styleImg
+                ? thumbnail
+                : 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_xlarge.jpg'
+            }
+            alt={name}
+            className={cn('char__basics-img', { char__basics_fit: styleImg })}
+          />
+        </Link>
         <div>
           <div className='char__info-name'>{name}</div>
           <div className='char__btns'>

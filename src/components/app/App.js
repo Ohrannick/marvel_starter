@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react';
+import { Helmet } from 'react-helmet';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import AppHeader from '../appHeader/AppHeader';
@@ -16,6 +17,10 @@ const SingleCharacter = lazy(() =>
 const App = () => {
   return (
     <Router>
+      <Helmet>
+        <meta name='description' content='Marvel information portal' />
+        <title>Marvel information portal</title>
+      </Helmet>
       <div className='app'>
         <AppHeader />
         <main>

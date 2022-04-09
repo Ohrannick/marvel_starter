@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 
 import cn from 'classnames';
@@ -130,6 +131,10 @@ const CharList = (props) => {
 
   return (
     <div className='char__list'>
+      <Helmet>
+        <meta name='description' content='Page with list of our charscters' />
+        <title>Characters page</title>
+      </Helmet>
       {spinner}
       {errorMessage}
       {content}

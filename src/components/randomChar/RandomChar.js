@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CSSTransition } from 'react-transition-group';
+import { Link } from 'react-router-dom';
+
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelService from '../../servises/MarvelService';
@@ -71,15 +73,17 @@ const View = ({ char }) => {
   const styleImg = thumbnail.indexOf('not_available') !== -1;
   return (
     <div className='randomchar__block'>
-      <img
-        src={
-          !styleImg
-            ? thumbnail
-            : 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_xlarge.jpg'
-        }
-        alt='Random character'
-        className={cn('randomchar__img', { randomchar__fit: styleImg })}
-      />
+      <Link to={`/characters/${char.id}`}>
+        <img
+          src={
+            !styleImg
+              ? thumbnail
+              : 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_xlarge.jpg'
+          }
+          alt='Random character'
+          className={cn('randomchar__img', { randomchar__fit: styleImg })}
+        />
+      </Link>
       <div className='randomchar__info'>
         <p className='randomchar__name'>
           {name.length > 22 ? `${name.slice(0, 22)}...` : name}

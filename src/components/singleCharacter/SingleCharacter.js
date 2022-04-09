@@ -1,4 +1,6 @@
+import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
+
 import './singleCharacter.scss';
 
 const SingleCharacter = ({ data }) => {
@@ -6,6 +8,10 @@ const SingleCharacter = ({ data }) => {
   const styleImg = thumbnail.indexOf('not_available') !== -1;
   return (
     <div className='char'>
+      <Helmet>
+        <meta name='description' content={`${name} character of comics`} />
+        <title>{name}</title>
+      </Helmet>
       <div className='single-char'>
         <img
           src={

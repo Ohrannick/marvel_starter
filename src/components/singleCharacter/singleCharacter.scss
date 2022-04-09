@@ -15,8 +15,10 @@
     align-items: start;
     &__img {
       width: 293px;
-      height: 293px;
+      height: 450px;
+      object-fit: cover;
     }
+
     &__name {
       font-weight: bold;
       font-size: 22px;

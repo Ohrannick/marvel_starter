@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
@@ -96,6 +98,10 @@ const ComicsList = () => {
 
   return (
     <div className='comics__list'>
+      <Helmet>
+        <meta name='description' content='Page with list of our comics' />
+        <title>Comics page</title>
+      </Helmet>
       {errorMessage}
       {items}
       {spinner}

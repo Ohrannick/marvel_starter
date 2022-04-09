@@ -1,3 +1,4 @@
+import Helmet from 'react-helmet';
 import { Link } from 'react-router-dom';
 import './singleComic.scss';
 
@@ -6,6 +7,10 @@ const SingleComic = ({ data }) => {
   const styleImg = thumbnail.indexOf('not_available') !== -1;
   return (
     <div className='comic'>
+      <Helmet>
+        <meta name='description' content={`${title} comics book`} />
+        <title>{title}</title>
+      </Helmet>
       <div className='single-comic'>
         <img
           src={
